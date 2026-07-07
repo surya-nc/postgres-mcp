@@ -20,8 +20,8 @@ from db import get_connection
 mcp = FastMCP(
     "postgres-demo",
     transport_security=TransportSecuritySettings(
-        enable_dns_rebinding_protection=False
-    ),
+        enable_dns_rebinding_protection=False,
+    )
 )
 
 @mcp.tool
