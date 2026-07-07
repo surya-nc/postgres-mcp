@@ -1,3 +1,4 @@
+import os
 from fastmcp import FastMCP
 from db import get_connection
 
@@ -65,4 +66,10 @@ def get_table_sample(
 
 
 if __name__ == "__main__":
-    mcp.run()
+    port = int(os.environ.get("PORT", 8000))
+
+    mcp.run(
+        transport="http",
+        host="0.0.0.0",
+        port=port
+    )
