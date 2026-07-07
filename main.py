@@ -67,7 +67,7 @@ def get_table_sample(
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-
+    print(f"Starting MCP server on port {port}")
     mcp.run(
         transport="http",
         host="0.0.0.0",
