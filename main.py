@@ -4,25 +4,18 @@ from mcp.server.transport_security import TransportSecuritySettings
 from db import get_connection
 
 
-# # 1. FIX: Dynamically build the allowed hosts list using Render's environment variables
-# render_url = os.environ.get("RENDER_EXTERNAL_URL", "")
-# render_host = render_url.replace("https://", "").replace("http://", "")
+# 1. FIX: Dynamically build the allowed hosts list using Render's environment variables
+render_url = os.environ.get("RENDER_EXTERNAL_URL", "")
+render_host = render_url.replace("https://", "").replace("http://", "")
 
-# allowed_hosts = ["localhost", "127.0.0.1"]
-# if render_host:
-#     allowed_hosts.append(render_host)
-# else:
-#     # Safe wildcard fallback to prevent local connection blockages during testing
-#     allowed_hosts.append("*")
+allowed_hosts = ["localhost", "127.0.0.1"]
+if render_host:
+    allowed_hosts.append(render_host)
+else:
+    # Safe wildcard fallback to prevent local connection blockages during testing
+    allowed_hosts.append("*")
 
-# mcp = FastMCP("postgres-demo")
-
-mcp = FastMCP(
-    "postgres-demo",
-    transport_security=TransportSecuritySettings(
-        enable_dns_rebinding_protection=False,
-    )
-)
+mcp = FastMCP("postgres-demo")
 
 @mcp.tool
 def get_tables() -> list[str]:
@@ -92,5 +85,6 @@ if __name__ == "__main__":
     mcp.run(
         transport="streamable-http", 
         host="0.0.0.0", 
-        port=port
+        port=port,
+        allowed_hosts=allowed_hosts
     )
