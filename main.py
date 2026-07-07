@@ -1,9 +1,28 @@
 import os
 from fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from db import get_connection
 
-mcp = FastMCP("postgres-demo")
 
+# # 1. FIX: Dynamically build the allowed hosts list using Render's environment variables
+# render_url = os.environ.get("RENDER_EXTERNAL_URL", "")
+# render_host = render_url.replace("https://", "").replace("http://", "")
+
+# allowed_hosts = ["localhost", "127.0.0.1"]
+# if render_host:
+#     allowed_hosts.append(render_host)
+# else:
+#     # Safe wildcard fallback to prevent local connection blockages during testing
+#     allowed_hosts.append("*")
+
+# mcp = FastMCP("postgres-demo")
+
+mcp = FastMCP(
+    "postgres-demo",
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False
+    ),
+)
 
 @mcp.tool
 def get_tables() -> list[str]:
@@ -70,4 +89,8 @@ def get_table_sample(
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=port)
+    mcp.run(
+        transport="streamable-http", 
+        host="0.0.0.0", 
+        port=port
+    )
